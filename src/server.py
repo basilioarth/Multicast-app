@@ -37,7 +37,7 @@ def multicast_initialize_server(pingsock, showAnotherServersResponse):
     multicast_pingaddress = (MULTICAST_GROUP, MULTICAST_PORT_PING)
     server_id = 1
     msg_count = 0
-    responded = []
+    global responded 
     pingsock.sendto(b'PING', multicast_pingaddress)
     while True:
         try:
@@ -60,8 +60,10 @@ def multicast_initialize_server(pingsock, showAnotherServersResponse):
     return server_id, responded
 
 def multicast_ping_send(pingsock):
+    global responded
     while True:
         time.sleep(1)
+        responded.clear()
         multicast_initialize_server(pingsock, False)
 
 '''
@@ -98,10 +100,11 @@ def multicast_ping_respond(server_id):
             sock.sendto(id_bytestr, client_address)
 
 def set_response_server(server_id, pingsock):
-    __server_id, responded = multicast_initialize_server(pingsock, False)
-    responded.sort()
+    global responded
+    responded_now = responded
+    responded_now.sort()
     #log("Os seguintes servidores responderam: {}".format(responded), False)
-    if server_id in responded:
+    if server_id in responded_now:
         if responded.index(server_id) == 0:
             log("O servidor detentor do id {} responderá".format(server_id), False)
             return True
