@@ -38,7 +38,7 @@ try:
                 log("Nenhuma resposta foi recebida!")
             break
         else:
-            log('O resultado {!r} foi recebido do servidor {}'.format(recv_message, server_address))
+            log('O resultado {} foi recebido do servidor {}'.format(recv_message.decode("utf-8"), server_address))
 finally:
     log("Encerrando a aplicação cliente")
     sock.close()

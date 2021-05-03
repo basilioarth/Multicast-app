@@ -45,6 +45,8 @@ def multicast_initialize_server(pingsock, showAnotherServersResponse):
             if recv_message:
                 msg_count += 1
                 received_id = int(recv_message.decode("utf-8"))
+                if not showAnotherServersResponse:
+                    log('Servidor {}{} ativo'.format(recv_message.decode("utf-8"), sender_address), False)
                 if showAnotherServersResponse:
                     log('Resposta do servidor de ID: {}'.format(recv_message.decode("utf-8")), False)
                 responded.append(received_id)
@@ -58,8 +60,14 @@ def multicast_initialize_server(pingsock, showAnotherServersResponse):
     return server_id, responded
 
 def multicast_ping_send(pingsock):
+    while True:
+        time.sleep(1)
+        multicast_initialize_server(pingsock, False)
+
+'''
+def multicast_ping_send(pingsock):
     multicast_pingaddress = (MULTICAST_GROUP, MULTICAST_PORT_PING)
-    pingsock.sendto(b'PING', multicast_pingaddress)
+    #pingsock.sendto(b'PING', multicast_pingaddress)
     msg_count = 0
     while True:
         time.sleep(1)
@@ -76,7 +84,7 @@ def multicast_ping_send(pingsock):
             if msg_count <= 0:
                 log("Nenhum outro servidor respondeu", False)
     pingsock.close()
-    
+''' 
 
 def multicast_ping_respond(server_id):
     local_address = ("", MULTICAST_PORT_PING)
